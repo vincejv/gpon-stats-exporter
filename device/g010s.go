@@ -21,6 +21,7 @@ func (o NOKIA_G010S) GetGponUrl() string {
 // cron job
 func (o NOKIA_G010S) UpdateCachedPage() {
 	cachedPage.SetStrPage("")
+	SvcHealth.SetFlag(false)
 
 	resp, err := http.Get(GponSvc.GetGponUrl())
 	if err != nil {
@@ -41,6 +42,7 @@ func (o NOKIA_G010S) UpdateCachedPage() {
 		return
 	} else {
 		cachedPage.SetStrPage(string(body))
+		SvcHealth.SetFlag(true)
 	}
 }
 

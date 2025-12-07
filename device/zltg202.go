@@ -85,6 +85,7 @@ func (gponPayload *ZLTG202_Payload) SetGponData(pon *ZLTG202_PonSts, dev *ZLTG20
 func (o ZLTG202) UpdateCachedPage() {
 	// clear previous cache
 	cachedZltG202Data.SetGponData(nil, nil, nil)
+	SvcHealth.SetFlag(false)
 
 	// Define the URL and request body
 	url := o.GetGponUrl()
@@ -121,6 +122,7 @@ func (o ZLTG202) UpdateCachedPage() {
 
 	if err == nil {
 		cachedZltG202Data.SetGponData(&ponStatus, &deviceInfo, &allStatus)
+		SvcHealth.SetFlag(true)
 	}
 }
 

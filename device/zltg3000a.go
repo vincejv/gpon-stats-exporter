@@ -160,6 +160,7 @@ func (o ZLTG3000A) fetchData(url string, jsonData []byte) (*ZLTG3000A_Payload, e
 func (o ZLTG3000A) UpdateCachedPage() {
 	// clear previous cache
 	cachedGponData.SetGponData(nil)
+	SvcHealth.SetFlag(false)
 
 	// Define the URL and request body
 	url := o.GetGponUrl()
@@ -170,6 +171,7 @@ func (o ZLTG3000A) UpdateCachedPage() {
 
 	if err == nil {
 		cachedGponData.SetGponData(response)
+		SvcHealth.SetFlag(true)
 	}
 }
 

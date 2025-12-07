@@ -106,6 +106,7 @@ func (o GN630V) UpdateCachedPage() {
 	// clear old cache
 	cachedPage.SetPage(nil)
 	cachedPage2.SetStrPage("")
+	SvcHealth.SetFlag(false)
 
 	// login
 	o.Login()
@@ -120,6 +121,7 @@ func (o GN630V) UpdateCachedPage() {
 	buffPage := o.FetchPage("/cgi-bin/sta-network.asp")
 	if len(buffPage) > 0 {
 		cachedPage2.SetStrPage(buffPage)
+		SvcHealth.SetFlag(true)
 	}
 }
 

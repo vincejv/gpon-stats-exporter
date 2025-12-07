@@ -95,6 +95,7 @@ func (o ZTEF670L) UpdateCachedPage() {
 	// clear previous cache
 	cachedPage.SetPage(nil)
 	cachedPage2.SetPage(nil)
+	SvcHealth.SetFlag(false)
 
 	// Cookie jar setup
 	options := cookiejar.Options{
@@ -164,6 +165,7 @@ func (o ZTEF670L) UpdateCachedPage() {
 		return
 	}
 	defer resp.Body.Close()
+	SvcHealth.SetFlag(true)
 }
 
 func (o ZTEF670L) parsePage(client http.Client, url string, docPage *util.DocPage) {

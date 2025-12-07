@@ -53,6 +53,7 @@ func main() {
 func initGponSvc() {
 	device.TelnetInit.SetFlag(false)
 	device.TelnetScripts.SetFlag(false)
+	device.SvcHealth.SetFlag(false)
 
 	model := os.Getenv("ONT_MODEL")
 	if len(model) > 0 {

@@ -26,6 +26,7 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	// clear old cache
 	cachedPage.SetPage(nil)
 	cachedPage2.SetPage(nil)
+	SvcHealth.SetFlag(false)
 
 	options := cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
@@ -62,6 +63,7 @@ func (o AN5506_Stock) UpdateCachedPage() {
 
 	// 3. Get device information
 	o.parsePage(client, GponSvc.GetGponUrl()+"/state/deviceInfor.asp", cachedPage2)
+	SvcHealth.SetFlag(true)
 
 	// 4. Logout from UI
 	req, err = http.NewRequest("GET", o.GetGponUrl()+"/goform/webLogout", nil)
