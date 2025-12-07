@@ -21,4 +21,4 @@
 go.work
 
 # Generated executable
-gpon-parser-go
+gpon-parser
