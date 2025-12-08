@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -15,13 +16,13 @@ import (
 	"github.com/vincejv/gpon-parser/util"
 )
 
-func (o GN630V) GetGponUrl() string {
+func (o SKYW_GN) GetGponUrl() string {
 	host := util.Getenv("ONT_WEB_HOST", "192.168.1.1")
 	port := util.Getenv("ONT_WEB_PORT", "80")
 	return fmt.Sprintf("http://%s:%s", host, port)
 }
 
-func (o GN630V) Login() {
+func (o SKYW_GN) Login() {
 	// Step 1: Perform login request
 	loginURL := fmt.Sprintf("%s/cgi-bin/index2.asp", o.GetGponUrl())
 	client := &http.Client{}
@@ -70,7 +71,7 @@ func (o GN630V) Login() {
 	}
 }
 
-func (o GN630V) FetchPage(url string) string {
+func (o SKYW_GN) FetchPage(url string) string {
 	// Step 2: Perform the GET request to fetch data after login
 	getURL := fmt.Sprintf("%s%s", o.GetGponUrl(), url)
 	req, err := http.NewRequest("GET", getURL, nil)
@@ -102,7 +103,7 @@ func (o GN630V) FetchPage(url string) string {
 }
 
 // cron job
-func (o GN630V) UpdateCachedPage() {
+func (o SKYW_GN) UpdateCachedPage() {
 	// clear old cache
 	cachedPage.SetPage(nil)
 	cachedPage2.SetStrPage("")
@@ -126,26 +127,37 @@ func (o GN630V) UpdateCachedPage() {
 }
 
 // Function to extract the value of sysUpTime
-func (o GN630V) ExtractSysUpTime(rawInput string) string {
+func (o SKYW_GN) ExtractSysUpTime(rawInput string) string {
 	// Using regex to extract the value
 	re := regexp.MustCompile(`var sysUpTime = "(.*?)";`)
 	match := re.FindStringSubmatch(rawInput)
 	if len(match) > 1 {
-		return match[1] // Return the extracted string
+		return match[1]
 	}
 
 	// Fallback using strings if regex fails
-	start := strings.Index(rawInput, `var sysUpTime = "`) + len(`var sysUpTime = "`)
-	end := strings.Index(rawInput[start:], `";`) + start
-	if start > -1 && end > -1 {
-		return rawInput[start:end]
+	key := `var sysUpTime = "`
+	start := strings.Index(rawInput, key)
+	if start != -1 {
+		start += len(key)
+		end := strings.Index(rawInput[start:], `";`)
+		if end != -1 {
+			return rawInput[start : start+end]
+		}
 	}
 
-	return "" // Return empty string if no match found
+	// Plain uptime formats
+	anyRe := regexp.MustCompile(`\d+\s+day[s]?\s+\d{2}:\d{2}:\d{2}|\d{2}:\d{2}:\d{2}`)
+	plain := anyRe.FindString(rawInput)
+	if plain != "" {
+		return plain
+	}
+
+	return ""
 }
 
 // Function to convert sysUpTime string to seconds as int64
-func (o GN630V) ConvertToSeconds(sysUpTime string) (int64, error) {
+func (o SKYW_GN) ConvertToSeconds(sysUpTime string) (int64, error) {
 	var totalSeconds int64
 
 	// Check if "days" is present in the string
@@ -190,7 +202,7 @@ func (o GN630V) ConvertToSeconds(sysUpTime string) (int64, error) {
 	return totalSeconds, nil
 }
 
-func (o GN630V) GetOpticalInfo() *model.OpticalStats {
+func (o SKYW_GN) GetOpticalInfo() *model.OpticalStats {
 	var opticalInfo *model.OpticalStats
 
 	if len(cachedPage2.GetStrPage()) > 0 {
@@ -228,7 +240,7 @@ func (o GN630V) GetOpticalInfo() *model.OpticalStats {
 	return opticalInfo
 }
 
-func (o GN630V) GetDeviceInfo() *model.DeviceStats {
+func (o SKYW_GN) GetDeviceInfo() *model.DeviceStats {
 	var deviceInfo *model.DeviceStats
 
 	if cachedPage.GetPage() != nil {
@@ -245,7 +257,13 @@ func (o GN630V) GetDeviceInfo() *model.DeviceStats {
 		util.ParseHtmlPage(&parsedList, cachedPage, dvcDtlTbl+"/tr[1]"+commonNode)
 		util.ParseHtmlPage(&parsedList, cachedPage, dvcDtlTbl+"/tr[3]"+commonNode)
 
-		deviceInfo.DeviceModel = "GN630V"
+		model := strings.ToLower(os.Getenv("ONT_MODEL"))
+
+		if strings.Contains(model, "gn256") {
+			deviceInfo.DeviceModel = "GN256"
+		} else {
+			deviceInfo.DeviceModel = "GN630V"
+		}
 		deviceInfo.ModelSerial = parsedList[0]
 		deviceInfo.SoftwareVersion = parsedList[1]
 		deviceInfo.MemoryUsage = util.ParseFloat(parsedList[2])

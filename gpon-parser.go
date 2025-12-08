@@ -57,29 +57,33 @@ func initGponSvc() {
 
 	model := os.Getenv("ONT_MODEL")
 	if len(model) > 0 {
+		log.Print("ONT Model is ")
 		if strings.EqualFold(model, "an5506_stock") {
-			log.Println("ONT Model is Fiberhome AN5506")
+			log.Println("Fiberhome AN5506")
 			device.GponSvc = new(device.AN5506_Stock)
 		} else if strings.EqualFold(model, "hg6245d_globe") {
-			log.Println("ONT Model is Fiberhome HG6245D")
+			log.Println("Fiberhome HG6245D")
 			device.GponSvc = new(device.HG6245D_Globe)
 		} else if strings.EqualFold(model, "zte_f670") {
-			log.Println("ONT Model is ZTE F670L")
+			log.Println("ZTE F670L")
 			device.GponSvc = new(device.ZTEF670L)
 		} else if strings.EqualFold(model, "zlt_g3000a") {
-			log.Println("ONT Model is ZLT G3000A WiFi 6")
+			log.Println("ZLT G3000A WiFi 6")
 			device.GponSvc = new(device.ZLTG3000A)
 		} else if strings.EqualFold(model, "zlt_g202") {
-			log.Println("ONT Model is ZLT G202 WiFi 5")
+			log.Println("ZLT G202 WiFi 5")
 			device.GponSvc = new(device.ZLTG202)
 		} else if strings.EqualFold(model, "skyworth_gn630v") {
-			log.Println("ONT Model is Skyworth GN630V WiFi 6")
-			device.GponSvc = new(device.GN630V)
+			log.Println("Skyworth GN630V WiFi 6")
+			device.GponSvc = new(device.SKYW_GN)
+		} else if strings.Contains(strings.ToLower(model), "skyworth_gn256") {
+			log.Println("Skyworth GN256 WiFi 5")
+			device.GponSvc = new(device.SKYW_GN)
 		} else if strings.EqualFold(model, "nokia_g010s") {
-			log.Println("ONT Model is Nokia G-010S-A/P SFP Module")
+			log.Println("Nokia G-010S-A/P SFP Module")
 			device.GponSvc = new(device.NOKIA_G010S)
 		} else {
-			log.Println("Invalid ONT model provided in env variable 'ONT_MODEL', valid args are ['an5506_stock', 'hg6245d_globe', 'zte_f670', 'zlt_g3000a', 'zlt_g202', 'skyworth_gn630v']")
+			log.Println("Invalid ONT model provided in env variable 'ONT_MODEL', valid args are ['an5506_stock', 'hg6245d_globe', 'zte_f670', 'zlt_g3000a', 'zlt_g202', 'skyworth_gn630v', 'skyworth_gn256', 'nokia_g010s']")
 			os.Exit(-10)
 		}
 	} else {
