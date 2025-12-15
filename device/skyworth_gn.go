@@ -31,7 +31,7 @@ func (o SKYW_GN) Login() {
 			InsecureSkipVerify: true,
 		},
 	}
-	client := &http.Client{
+	client := http.Client{
 		Transport: tr,
 	}
 
@@ -85,7 +85,7 @@ func (o SKYW_GN) FetchPage(url string) string {
 			InsecureSkipVerify: true,
 		},
 	}
-	client := &http.Client{
+	client := http.Client{
 		Transport: tr,
 	}
 
