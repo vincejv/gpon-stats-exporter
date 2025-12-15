@@ -20,7 +20,7 @@ import (
 func (o SKYW_GN) GetGponUrl() string {
 	host := util.Getenv("ONT_WEB_HOST", "192.168.1.1")
 	port := util.Getenv("ONT_WEB_PORT", "80")
-	return fmt.Sprintf("http://%s:%s", host, port)
+	return fmt.Sprintf("%s:%s", host, port)
 }
 
 func (o SKYW_GN) Login() {
