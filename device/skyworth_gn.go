@@ -80,6 +80,15 @@ func (o SKYW_GN) Login() {
 }
 
 func (o SKYW_GN) FetchPage(url string) string {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true,
+		},
+	}
+	client := &http.Client{
+		Transport: tr,
+	}
+
 	// Step 2: Perform the GET request to fetch data after login
 	getURL := fmt.Sprintf("%s%s", o.GetGponUrl(), url)
 	req, err := http.NewRequest("GET", getURL, nil)
