@@ -1,6 +1,7 @@
 package device
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io"
 	"log"
@@ -25,7 +26,14 @@ func (o SKYW_GN) GetGponUrl() string {
 func (o SKYW_GN) Login() {
 	// Step 1: Perform login request
 	loginURL := fmt.Sprintf("%s/cgi-bin/index2.asp", o.GetGponUrl())
-	client := &http.Client{}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true,
+		},
+	}
+	client := &http.Client{
+		Transport: tr,
+	}
 
 	usern := util.Getenv("ONT_WEB_USER", "user")
 	passw := util.Getenv("ONT_WEB_PASS", "user")
