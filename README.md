@@ -90,7 +90,7 @@ Configure Telegraf to scrape the exported JSON data using the `inputs.http` plug
   * ONT Web UI password
   * Default: depends on modem
 * `ONT_TELNET_PORT`
-  * ONT Web UI password
+  * ONT telnet console password
   * Default: `23`
 * `ONT_POLL_SEC`
   * Specifies the frequency on how often the GPON stats are pulled from the ONT

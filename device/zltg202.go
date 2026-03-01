@@ -162,9 +162,10 @@ func (o ZLTG202) GetDeviceInfo() *model.DeviceStats {
 }
 
 func (o ZLTG202) GetGponUrl() string {
+	protocol := util.Getenv("ONT_WEB_PROTOCOL", "http")
 	host := util.Getenv("ONT_WEB_HOST", "192.168.254.254")
 	port := util.Getenv("ONT_WEB_PORT", "80")
-	return fmt.Sprintf("http://%s:%s/boaform/", host, port)
+	return fmt.Sprintf("%s://%s:%s/boaform/", protocol, host, port)
 }
 
 func (o ZLTG202) GetHeaders() map[string]string {
