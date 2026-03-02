@@ -89,6 +89,9 @@ Configure Telegraf to scrape the exported JSON data using the `inputs.http` plug
 * `ONT_WEB_PASS`
   * ONT Web UI password
   * Default: depends on modem
+* `ONT_TELNET_HOST`
+  * ONT telnet console hostname or ip address
+  * Default: `ONT_WEB_HOST`
 * `ONT_TELNET_PORT`
   * ONT telnet console password
   * Default: `23`

@@ -36,7 +36,8 @@ func (o ZTEF670L) GetGponUrl() string {
 }
 
 func (o ZTEF670L) GetTelnetUrl() string {
-	return fmt.Sprintf("%s:%s", o.GetModemIp(), o.GetTelnetPort())
+	telnetHost := util.Getenv("ONT_TELNET_HOST", o.GetModemIp())
+	return fmt.Sprintf("%s:%s", telnetHost, o.GetTelnetPort())
 }
 
 func (o ZTEF670L) GetWebUsern() string {
